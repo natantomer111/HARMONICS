@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harmonics | הארמוניקס - פתרונות סאונד מתקדמים</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { navy: '#0B132B', slate: '#1C2541', silver: '#EAEAEA', cyan: '#00E5FF', darkCyan: '#00B4CC' },
+                    fontFamily: { sans: ['Assistant', 'sans-serif'] },
+                    boxShadow: { 'glow': '0 0 15px rgba(0, 229, 255, 0.4)', 'glow-hover': '0 0 25px rgba(0, 229, 255, 0.7)' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0B132B; color: #EAEAEA; overflow-x: hidden; }
+        html { scroll-behavior: smooth; }
+        ::-webkit-scrollbar { width: 10px; }
+        ::-webkit-scrollbar-track { background: #0B132B; }
+        ::-webkit-scrollbar-thumb { background: #1C2541; border-radius: 5px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00E5FF; }
+        .text-glow { text-shadow: 0 0 10px rgba(0, 229, 255, 0.5); }
+        
+        /* רקע עליון - מתוקן ל-jpeg */
+        .hero-bg {
+           background-image: linear-gradient(rgba(11, 19, 43, 0.4), rgba(11, 19, 43, 0.6)), url('ani.jpeg');
+            background-size: cover;
+            background-position: center 20%
+        }
+
+        .glass { background: rgba(28, 37, 65, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(234, 234, 234, 0.1); }
+        .service-card { transition: all 0.3s ease; border-bottom: 3px solid transparent; }
+        .service-card:hover { transform: translateY(-5px); border-bottom: 3px solid #00E5FF; box-shadow: 0 10px 30px -10px rgba(0, 229, 255, 0.2); }
+        
+        .soundwave { display: flex; align-items: center; gap: 4px; height: 30px; }
+        .bar { width: 4px; background: #00E5FF; border-radius: 2px; animation: wave 1s ease-in-out infinite alternate; }
+        .bar:nth-child(1) { animation-delay: 0.1s; height: 10px; }
+        .bar:nth-child(2) { animation-delay: 0.2s; height: 20px; }
+        .bar:nth-child(3) { animation-delay: 0.3s; height: 30px; }
+        .bar:nth-child(4) { animation-delay: 0.4s; height: 20px; }
+        .bar:nth-child(5) { animation-delay: 0.5s; height: 15px; }
+
+        @keyframes wave { 0% { transform: scaleY(0.5); } 100% { transform: scaleY(1.5); } }
+        .hamburger-active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger-active span:nth-child(2) { opacity: 0; }
+        .hamburger-active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Sticky Header -->
+    <header class="fixed w-full top-0 z-50 transition-all duration-300" id="header">
+        <div class="glass">
+            <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" class="flex items-center gap-3 group">
+                    <div class="relative flex items-center justify-center w-10 h-10 rounded-full bg-slate border border-cyan group-hover:shadow-glow transition-all">
+                        <i class="fa-solid fa-music text-cyan text-sm absolute top-2 right-2"></i>
+                        <i class="fa-solid fa-dove text-silver text-lg mt-2"></i>
+                    </div>
+                    <span class="text-2xl font-bold tracking-wider text-silver group-hover:text-cyan transition-colors">
+                        Harmonics <span class="text-sm font-normal text-gray-400 block -mt-1">הארמוניקס</span>
+                    </span>
+                </a>
+                <nav class="hidden md:flex gap-8 items-center text-lg">
+                    <a href="#about" class="hover:text-cyan transition-colors">אודות</a>
+                    <a href="#services" class="hover:text-cyan transition-colors">שירותים ופתרונות</a>
+                    <a href="#portfolio" class="hover:text-cyan transition-colors">תיק עבודות</a>
+                    <a href="#contact" class="hover:text-cyan transition-colors">צור קשר</a>
+                </nav>
+                <div class="flex items-center gap-4">
+                    <a href="#contact" class="hidden md:inline-block bg-transparent border-2 border-cyan text-cyan hover:bg-cyan hover:text-navy font-bold py-2 px-6 rounded-full transition-all duration-300 shadow-glow hover:shadow-glow-hover">קבלת הצעת מחיר</a>
+                    <button id="mobile-menu-btn" class="md:hidden flex flex-col justify-center items-center w-8 h-8 z-50">
+                        <span class="block w-6 h-0.5 bg-silver mb-1.5 transition-transform duration-300"></span>
+                        <span class="block w-6 h-0.5 bg-silver mb-1.5 transition-opacity duration-300"></span>
+                        <span class="block w-6 h-0.5 bg-silver transition-transform duration-300"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="mobile-menu" class="absolute top-full left-0 w-full glass hidden flex-col border-t border-slate">
+            <a href="#about" class="p-4 border-b border-slate text-center hover:text-cyan">אודות</a>
+            <a href="#services" class="p-4 border-b border-slate text-center hover:text-cyan">שירותים ופתרונות</a>
+            <a href="#portfolio" class="p-4 border-b border-slate text-center hover:text-cyan">תיק עבודות</a>
+            <a href="#contact" class="p-4 border-b border-slate text-center hover:text-cyan">צור קשר</a>
+            <div class="p-4 text-center">
+                <a href="#contact" class="inline-block bg-cyan text-navy font-bold py-2 px-8 rounded-full shadow-glow">קבלת הצעת מחיר</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center pt-20 relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-navy opacity-90"></div>
+        <div class="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 text-center md:text-right">
+                <div class="inline-flex items-center gap-3 px-4 py-1.5 rounded-full glass mb-6 border border-cyan/30">
+                    <div class="soundwave"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+                    <span class="text-cyan text-sm font-semibold tracking-wide">פתרונות סאונד מתקדמים</span>
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-4 leading-tight text-glow">
+                    הסאונד שלך, <br><span class="text-cyan">ברמה הגבוהה ביותר.</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl leading-relaxed">
+                    ממערכות הגברה מקצועיות ועד לאולפני הקלטה. אנו מספקים פתרונות אודיו בהתאמה אישית מלאה, ללא פשרות על איכות, דיוק וחדשנות.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                    <a href="#contact" class="bg-cyan hover:bg-darkCyan text-navy font-bold text-lg py-3 px-8 rounded-full transition-all duration-300 shadow-glow hover:shadow-glow-hover text-center">דברו איתי</a>
+                    <a href="#services" class="bg-transparent border-2 border-silver hover:border-cyan hover:text-cyan text-silver font-bold text-lg py-3 px-8 rounded-full transition-all duration-300 text-center">גלו את הפתרונות שלנו</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="py-24 bg-navy relative">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/3 relative">
+                    <div class="absolute inset-0 bg-cyan rounded-lg transform translate-x-3 translate-y-3 opacity-20"></div>
+                    <!-- תמונת אודות מתוקנת ל-jpeg -->
+                    <img src="ani.jpeg" alt="תומר נתן - מומחה סאונד" class="relative z-10 w-full h-auto object-cover rounded-lg shadow-2xl border border-slate grayscale hover:grayscale-0 transition-all duration-500">
+                    <div class="absolute bottom-4 right-4 z-20 glass px-4 py-2 rounded shadow-lg border-l-4 border-cyan">
+                        <p class="font-bold text-lg">תומר נתן</p>
+                        <p class="text-sm text-cyan">מומחה סאונד והנדסת קול</p>
+                    </div>
+                </div>
+                <div class="md:w-2/3">
+                    <h2 class="text-4xl font-bold mb-2">מי אנחנו</h2>
+                    <div class="w-16 h-1 bg-cyan mb-8 rounded"></div>
+                    <p class="text-xl text-gray-300 mb-6 leading-relaxed">
+                        נעים להכיר, אני תומר נתן. עם רקע מעמיק בלימודי הנדסת קול ואהבה חסרת פשרות לסאונד נקי ומדויק, הקמתי את <span class="text-cyan font-bold">Harmonics</span> כדי לספק מענה טכנולוגי ואקוסטי מושלם.
+                    </p>
+                    <p class="text-lg text-gray-400 mb-8 leading-relaxed">
+                        המומחיות שלי משלבת הבנה אקוסטית עמוקה עם יכולות טכניות מתקדמות. אני מביא איתי לא רק את האוזן המוזיקלית, אלא גם את הידיים העובדות - היכולת לרתך, לבנות קונסטרוקציות ולהתאים ציוד ומארזים מאפס, מבטיחה שכל מערכת אודיו תשב בצורה בטוחה, יציבה ואסתטית, בין אם מדובר באולפן ביתי או במערך הגברה בשטח.
+                    </p>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-cyan text-xl"></i><span class="text-silver">הנדסת קול מתקדמת</span></div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-cyan text-xl"></i><span class="text-silver">תכנון ובניית קונסטרוקציות</span></div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-cyan text-xl"></i><span class="text-silver">פתרונות Custom Made</span></div>
+                        <div class="flex items-center gap-3"><i class="fa-solid fa-check-circle text-cyan text-xl"></i><span class="text-silver">ליווי אישי בשטח</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section id="services" class="py-24 bg-slate">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4 text-glow">שירותים ופתרונות</h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">מעטפת פתרונות מלאה לסאונד מקצועי, המשלבת טכנולוגיה, אקוסטיקה ותכנון פיזי קפדני.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="service-card glass p-8 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan opacity-5 rounded-bl-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 rounded-full bg-navy border border-cyan flex items-center justify-center mb-6 shadow-glow"><i class="fa-solid fa-sliders text-2xl text-cyan"></i></div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">פתרונות אודיו מתקדמים לעסקים ופרטיים</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">התאמת מערכות שמע חכמות לחללים מסחריים, מסעדות, משרדים ובתים פרטיים. תכנון מערכות סאונד נסתרות ושילוב אודיו רב-אזורי.</p>
+                </div>
+                <div class="service-card glass p-8 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan opacity-5 rounded-bl-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 rounded-full bg-navy border border-cyan flex items-center justify-center mb-6 shadow-glow"><i class="fa-solid fa-speaker-deck text-2xl text-cyan"></i></div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">תכנון, בנייה והתקנה של מערכות PA והגברה</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">שירות מקיף להקמת מערכות הגברה מקצועיות לבמות ואירועים. השירות כולל הנדסת קול, תכנון פיזי, ייצור, בניית קונסטרוקציות וריתוך סטנדים מותאמים אישית לעמידות מקסימלית בשטח.</p>
+                </div>
+                <div class="service-card glass p-8 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan opacity-5 rounded-bl-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 rounded-full bg-navy border border-cyan flex items-center justify-center mb-6 shadow-glow"><i class="fa-solid fa-microphone-lines text-2xl text-cyan"></i></div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">ייעוץ ותכנון אולפני הקלטה וסביבות עבודה</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">ליווי מלא בהקמת אולפנים ביתיים ומסחריים. מבחירת הציוד המדויק, סידור החדר, כבילה נכונה ועד להשגת סאונד אנליטי וניטרלי ליצירה והפקה.</p>
+                </div>
+                <div class="service-card glass p-8 rounded-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-cyan opacity-5 rounded-bl-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div class="w-16 h-16 rounded-full bg-navy border border-cyan flex items-center justify-center mb-6 shadow-glow"><i class="fa-solid fa-wave-square text-2xl text-cyan"></i></div>
+                    <h3 class="text-2xl font-bold mb-4 text-silver">פתרונות אקוסטיקה ובידוד רעשים מותאמים אישית</h3>
+                    <p class="text-gray-400 mb-6 leading-relaxed">אבחון וטיפול בבעיות אקוסטיות בכל חלל. ייצור והתקנה של פאנלים אקוסטיים, לוכדי בס (Bass Traps) ופתרונות בידוד למניעת זליגת רעש.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section id="portfolio" class="py-24 bg-slate">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-4xl font-bold mb-2 text-glow">שמעו את התוצאות</h2>
+                    <p class="text-gray-400">הצצה לפרויקטים, התקנות PA ואולפנים שבנינו.</p>
+                </div>
+            </div>
+
+            <!-- הגלריה - מתוקן ל-jpeg -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="relative group overflow-hidden rounded-xl h-64 md:h-80">
+                    <img src="acoustic2.jpeg" alt="Studio Setup" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <h4 class="text-xl font-bold text-cyan mb-1">הקמת אולפן ביתי</h4>
+                        <p class="text-sm text-silver">תכנון אקוסטי וטיפול בהחזרים</p>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-xl h-64 md:h-80">
+                    <img src="acoustic4.jpeg" alt="Live PA System" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <h4 class="text-xl font-bold text-cyan mb-1">מערכות PA והגברה בשטח</h4>
+                        <p class="text-sm text-silver">בניית קונסטרוקציות וכיול מערכת</p>
+                    </div>
+                </div>
+                <div class="relative group overflow-hidden rounded-xl h-64 md:h-80">
+                    <img src="acoustic6.jpeg" alt="Acoustic Treatment" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale hover:grayscale-0">
+                    <div class="absolute inset-0 bg-gradient-to-t from-navy via-navy/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
+                        <h4 class="text-xl font-bold text-cyan mb-1">טיפול אקוסטי מותאם</h4>
+                        <p class="text-sm text-silver">התקנת פאנלים ולוכדי תדרים נמוכים</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact" class="bg-navy relative pt-20 pb-10 border-t-4 border-cyan">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">
+                <div>
+                    <h2 class="text-4xl font-bold mb-2 text-glow">בואו נדבר</h2>
+                    <p class="text-gray-400 mb-8">מוכנים לשדרג את הסאונד שלכם? השאירו פרטים או צרו קשר ישיר לקבלת הצעת מחיר וייעוץ ראשוני.</p>
+                    <div class="space-y-6 mb-10">
+                        <div class="flex items-center gap-4 group">
+                            <div class="w-12 h-12 rounded-full bg-slate border border-cyan flex items-center justify-center group-hover:bg-cyan transition-colors shadow-glow"><i class="fa-solid fa-phone text-cyan group-hover:text-navy transition-colors"></i></div>
+                            <div><p class="text-sm text-gray-400">טלפון</p><a href="tel:0548023452" class="text-lg font-bold hover:text-cyan transition-colors" dir="ltr">054-8023452</a></div>
+                        </div>
+                        <div class="flex items-center gap-4 group">
+                            <div class="w-12 h-12 rounded-full bg-slate border border-cyan flex items-center justify-center group-hover:bg-cyan transition-colors shadow-glow"><i class="fa-solid fa-envelope text-cyan group-hover:text-navy transition-colors"></i></div>
+                            <div><p class="text-sm text-gray-400">אימייל</p><a href="mailto:natantomer111@gmail.com" class="text-lg font-bold hover:text-cyan transition-colors">natantomer111@gmail.com</a></div>
+                        </div>
+                        <div class="flex items-center gap-4 group">
+                            <div class="w-12 h-12 rounded-full bg-slate border border-cyan flex items-center justify-center group-hover:bg-cyan transition-colors shadow-glow"><i class="fa-solid fa-location-dot text-cyan group-hover:text-navy transition-colors"></i></div>
+                            <div><p class="text-sm text-gray-400">אזור שירות</p><p class="text-lg font-bold">עמק החולה והסביבה</p></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-full min-h-[400px] rounded-xl overflow-hidden glass border border-cyan/20 p-2">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106606.01256372551!2d35.53982485376174!3d33.10915152062322!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x151c0f0bfeb4a6eb%3A0xc6baabfc8933b5c4!2sHula%20Valley!5e0!3m2!1sen!2sil!4v1716301234567!5m2!1sen!2sil" width="100%" height="100%" style="border:0; border-radius: 0.5rem;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+            <div class="border-t border-slate pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center gap-2 mb-4 md:mb-0">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-full bg-slate border border-cyan"><i class="fa-solid fa-music text-cyan text-xs"></i></div>
+                    <span class="font-bold text-silver">Harmonics</span><span class="text-gray-500 mx-2">|</span><span class="text-sm text-gray-400">תומר נתן - מומחה סאונד</span>
+                </div>
+                <p class="text-sm text-gray-500">© 2026 כל הזכויות שמורות ל-Harmonics.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) { header.classList.add('shadow-lg'); header.querySelector('.glass').classList.add('bg-opacity-90'); }
+            else { header.classList.remove('shadow-lg'); header.querySelector('.glass').classList.remove('bg-opacity-90'); }
+        });
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => { mobileBtn.classList.toggle('hamburger-active'); mobileMenu.classList.toggle('hidden'); mobileMenu.classList.toggle('flex'); });
+        document.querySelectorAll('#mobile-menu a').forEach(link => { link.addEventListener('click', () => { mobileBtn.classList.remove('hamburger-active'); mobileMenu.classList.add('hidden'); mobileMenu.classList.remove('flex'); }); });
+    </script>
+</body>
+</html>
